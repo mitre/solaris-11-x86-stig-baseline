@@ -1,0 +1,1 @@
+# solaris-11-x86-stig-baseline
