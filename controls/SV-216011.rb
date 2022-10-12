@@ -21,8 +21,7 @@ pfexec auditconfig -getcond
 
 If this command does not report:
 
-audit condition = 
-auditing
+audit condition = auditing
 
 this is a finding."
   desc "fix", "The Audit Control profile is required.
@@ -49,4 +48,16 @@ following command:
   tag legacy: ["V-47781","SV-60657"]
   tag cci: ["CCI-001487"]
   tag nist: ["AU-3 f"]
+
+  unless command('zonename').stdout.strip == "global"
+    impact 0.0
+    describe 'This control is Not Applicable' do
+      skip 'This control is Not Applicable' 
+    end
+  else
+    audit_condition_value = command("pfexec auditconfig -getcond").stdout.strip.split("=").collect(&:strip)[1]
+    describe audit_condition_value do
+      it { should cmp 'auditing'}
+    end
+  end
 end
