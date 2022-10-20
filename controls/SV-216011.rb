@@ -51,8 +51,8 @@ following command:
 
   unless command('zonename').stdout.strip == "global"
     impact 0.0
-    describe 'This control is Not Applicable' do
-      skip 'This control is Not Applicable' 
+    describe 'This control is Not Applicable. This control applies to the global zone only.' do
+      skip 'This control is Not Applicable. This control applies to the global zone only.' 
     end
   else
     audit_condition_value = command("pfexec auditconfig -getcond").stdout.strip.split("=").collect(&:strip)[1]

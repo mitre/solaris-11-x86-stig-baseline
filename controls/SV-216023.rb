@@ -71,4 +71,35 @@ currently logged in."
   tag legacy: ["SV-60681","V-47805"]
   tag cci: ["CCI-000366"]
   tag nist: ["CM-6 b"]
+
+  uname = command("uname –v").stdout.strip.split(".0.").collect(&:strip)[0]
+  audit_flag1 = command("pfexec auditconfig -getflags | grep active | cut -f2 -d=").stdout.strip
+  audit_flag2 = command("pfexec auditconfig -t -getflags | cut -f2 -d=").stdout.strip
+  audit_condition_value = command("pfexec auditconfig -getpolicy | grep active | grep argv").stdout.strip.split("=").collect(&:strip)[1]
+  old_flags = input('old_audit_flags')
+  new_flags = input('new_audit_flags')
+  
+  unless command('zonename').stdout.strip == "global"
+    impact 0.0
+    describe 'This control is Not Applicable. This control applies to the global zone only.' do
+      skip 'This control is Not Applicable. This control applies to the global zone only.' 
+    end
+  else
+    if uname == "11.1" || "11.2" || "11.3" 
+      describe audit_flag1 do
+        old_flags.each do |flag|
+          it { should include flag}
+        end
+      end
+    elsif uname == "11.4"
+      describe audit_flag2 do
+        new_flags.each do |sol_flag|
+          it { should include sol_flag}
+        end
+      end
+    end
+  end
+  describe audit_condition_value do
+    it { should_not cmp ''}
+  end
 end

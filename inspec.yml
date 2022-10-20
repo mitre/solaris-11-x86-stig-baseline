@@ -11,3 +11,25 @@ summary: '"This Security Technical Implementation Guide is published as a tool
   to this document should be sent via email to the following address:
   disa.stig_spt@mail.mil."'
 version: 0.1.0
+
+inputs:
+  - name: new_audit_flags
+    type: array
+    value:
+      - 'cusa'
+      - '-fa'
+      - '-ex'
+      - '-ps'
+      - 'fd'
+      - 'fm'
+
+  - name: old_audit_flags
+    type: array
+    value:
+      - 'cusa'
+      - '-ps'
+      - 'fd'
+      - '-fa'
+      - 'fm'
+
+ 
