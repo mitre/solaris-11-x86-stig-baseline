@@ -47,4 +47,16 @@ following command:
   tag legacy: ["V-47803","SV-60679"]
   tag cci: ["CCI-000134"]
   tag nist: ["AU-3 e"]
+
+  unless command('zonename').stdout.strip == "global"
+    impact 0.0
+    describe 'This control is Not Applicable. This control applies to the global zone only.' do
+      skip 'This control is Not Applicable. This control applies to the global zone only.' 
+    end
+  else
+    audit_condition_value = command("pfexec auditconfig -getcond").stdout.strip.split("=").collect(&:strip)[1]
+    describe audit_condition_value do
+      it { should cmp 'auditing'}
+    end
+  end
 end
