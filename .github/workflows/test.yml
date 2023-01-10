@@ -7,6 +7,23 @@ on:
     branches: [main]
 
 jobs:
+  install:
+    runs-on: macos-12
+    name: install inspec on Solaris
+    env:
+      MYTOKEN : ${{ secrets.MYTOKEN }}
+      MYTOKEN2: "value2"
+    steps:
+    - name: Test in Solaris
+      id: test
+      uses: vmactions/solaris-vm@v0
+      with:
+        envs: 'MYTOKEN MYTOKEN2'
+        usesh: true
+        run: |
+          hostname
+          curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
+          inspec version
   test:
     runs-on: macos-12
     name: Validate profile

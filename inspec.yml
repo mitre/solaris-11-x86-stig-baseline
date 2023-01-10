@@ -22,6 +22,14 @@ inputs:
       - '-ps'
       - 'fd'
       - 'fm'
+      - 'as'
+      - 'ft'
+      - 'lo'
+      - 'ap'
+      - 'ss'
+      - 'as'
+      - 'ua'
+      - 'pe'
 
   - name: old_audit_flags
     type: array
@@ -31,5 +39,8 @@ inputs:
       - 'fd'
       - '-fa'
       - 'fm'
+      - 'ps'
+      - 'lo'
+      - 'na'
 
  
