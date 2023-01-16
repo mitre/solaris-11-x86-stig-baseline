@@ -161,7 +161,7 @@ Refresh the audit service
       it { should cmp 'active'}
     end
     describe test_1 do
-      it { should not include '#'}
+      it { should_not include '#'}
     end
 end
 
