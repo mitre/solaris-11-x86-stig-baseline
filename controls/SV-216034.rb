@@ -147,4 +147,22 @@ Refresh the audit service
   tag legacy: ["SV-60703","V-47827"]
   tag cci: ["CCI-000166"]
   tag nist: ["AU-10"]
+
+  audit_flag = command('pfexec auditconfig -getplugin | grep audit_syslog').stdout.split("(").last.split(")").first
+  test_1 =  command('pfexec auditconfig -getplugin | grep audit_syslog').stdout
+  
+  if !command("zonename").stdout.strip == "global"
+    impact 0.0
+    describe "This control is Not Applicable. This control applies to the global zone only." do
+      skip "This control is Not Applicable. This control applies to the global zone only."
+    end
+  else
+    describe audit_flag do
+      it { should cmp 'active'}
+    end
+    describe test_1 do
+      it { should_not include '#'}
+    end
 end
+
+

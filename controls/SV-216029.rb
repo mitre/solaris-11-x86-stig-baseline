@@ -74,4 +74,40 @@ currently logged in."
   tag legacy: ["V-47817","SV-60693"]
   tag cci: ["CCI-000366"]
   tag nist: ["CM-6 b"]
+
+  uname = command("uname -v").stdout.strip.split(".")[1]
+  audit_flag = command("pfexec auditconfig -getflags | grep active | cut -f2 -d=").stdout.strip
+  audit_condition_value = command("pfexec auditconfig -getpolicy | grep active | grep argv").stdout.strip.split("=").collect(&:strip)[1]
+  old_flags = input("old_audit_flags")
+  new_flags = input("new_audit_flags")
+
+  if !command("zonename").stdout.strip == "global"
+    impact 0.0
+    describe "This control is Not Applicable. This control applies to the global zone only." do
+      skip "This control is Not Applicable. This control applies to the global zone only."
+    end
+  elsif audit_flag.include?("sstore")
+    describe "The audit system does not have flags set.\n\ The auditconfig command returned: #{audit_flag} .\n\ Review the Fix Text to properly configure this system. " do
+      subject {false}
+      it {should be_true} 
+    end
+  else
+    case uname
+    when 0..3
+      describe audit_flag do
+        old_flags.each do |flag|
+          it { should include flag }
+        end
+      end
+    else
+      describe audit_flag do
+        new_flags.each do |sol_flag|
+          it { should include sol_flag }
+        end
+      end
+    end
+    describe audit_condition_value do
+      it { should_not be_empty }
+    end
+  end
 end

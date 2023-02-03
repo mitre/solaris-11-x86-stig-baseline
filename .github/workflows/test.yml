@@ -7,34 +7,21 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  install:
     runs-on: macos-12
-    name: Validate profile
+    name: install inspec on Solaris
     env:
-      CHEF_LICENSE: accept-silent
-      MYTOKEN: ${{ secrets.MYTOKEN }}
+      MYTOKEN : ${{ secrets.MYTOKEN }}
       MYTOKEN2: "value2"
     steps:
-      - name: Test in Solaris
-        uses: actions/checkout@master
-      - name: install chef
-        uses: actionshub/chef-install@main
-      - name: Check InSpec version
-        run: inspec version
-      - name: Run InSpec
-        run: "inspec exec . --reporter=cli json:results.json || true"
-      - name: Display the results summary
-        uses: mitre/saf_action@v1
-        with:
-          usesh: true
-          command_string: "view summary -i results.json"
-          run: |
-            hostname
-      - name: Ensure the scan meets the results threshold
-        uses: mitre/saf_action@v1
-        with:
-          command_string: 'validate threshold -i results.json -F threshold.yml'
-      - name: Save Test Result JSON
-        uses: actions/upload-artifact@v2
-        with:
-          path: results.json
+    - name: Test in Solaris
+      id: test
+      uses: vmactions/solaris-vm@v0
+      with:
+        envs: 'MYTOKEN MYTOKEN2'
+        usesh: true
+        run: |
+          hostname
+          curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
+          inspec version
+ 
