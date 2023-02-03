@@ -25,4 +25,3 @@ jobs:
           curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
           inspec version
  
-  
